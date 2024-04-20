@@ -35,7 +35,7 @@ import backgroundImg2 from "../assets/images/background/c9d3deb2880411ebb6edd017
 import backgroundImg3 from "../assets/images/background/c8bfcd9f880411ebb6edd017c2d2eca2.jpg";
 import backgroundImg4 from "../assets/images/background/wallhaven-qzmzvd_1920x1080.png";
 export default {
-  name: 'HomeView',
+  name: 'Login',
   data() {
     return {
       loginForm: {
@@ -64,14 +64,8 @@ export default {
     submitLogin() {
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
-          this.postKeyValueRequest('/doLogin', this.loginForm).then(resp => {
-            if (resp) {
-              window.sessionStorage.setItem("user",JSON.stringify(resp));
-              let path = this.$route.query.redirect;
-
-              this.$router.replace(path=='/'||path==undefined?'/home':path);
-            }
-          })
+          let path = this.$route.query.redirect;
+          this.$router.replace(path=='/'||path==undefined?'/home':path);
           // alert('submit!');
         } else {
           this.$message.error('请输入所有字段')
