@@ -14,16 +14,15 @@
 
       <el-form :rules="rules" ref="loginForm" :model="loginForm" class="loginContainer">
         <h3 class="loginTitle">Dream登录</h3>
-        <el-form-item prop="username">
-          <el-input type="text" v-model="loginForm.username" auto-complete="off" placeholder="请输入用户名"></el-input>
+        <el-form-item prop="userName">
+          <el-input type="text" v-model="loginForm.userName" auto-complete="off" placeholder="请输入用户名"></el-input>
         </el-form-item>
-        <el-form-item prop="password">
-          <el-input type="text" v-model="loginForm.password" auto-complete="off" placeholder="请输入密码" @keydown.enter.native="submitLogin" show-password></el-input>
+        <el-form-item prop="passWord">
+          <el-input type="text" v-model="loginForm.passWord" auto-complete="off" placeholder="请输入密码" @keydown.enter.native="submitLogin" show-password></el-input>
         </el-form-item>
         <el-button type="primary" style="width:100%;" @click="submitLogin">登录</el-button>
       </el-form>
     </el-container>
-
   </div>
 </template>
 
@@ -34,18 +33,20 @@ import backgroundImg1 from "../assets/images/background/c586cac74b474b5ea5458a04
 import backgroundImg2 from "../assets/images/background/c9d3deb2880411ebb6edd017c2d2eca2.jpg";
 import backgroundImg3 from "../assets/images/background/c8bfcd9f880411ebb6edd017c2d2eca2.jpg";
 import backgroundImg4 from "../assets/images/background/wallhaven-qzmzvd_1920x1080.png";
+import {postRequest} from "@/utils/api";
+// import postKeyValueRequest from "../utils/api";
 export default {
   name: 'Login',
   data() {
     return {
       loginForm: {
-        username: 'pangy',
-        password: '123'
+        userName: 'pangy',
+        passWord: '123'
       },
       checked: true,
       rules: {
-        username: [{required: true, message: '请输入用户名', trigger: 'blur'}],
-        password: [{required: true, message: '请输入密码', trigger: 'blur'}]
+        userName: [{required: true, message: '请输入用户名', trigger: 'blur'}],
+        passWord: [{required: true, message: '请输入密码', trigger: 'blur'}]
       },
       imgIndex : 0,
       loginBackgroundImg: backgroundImg1,
@@ -64,9 +65,15 @@ export default {
     submitLogin() {
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
-          let path = this.$route.query.redirect;
-          this.$router.replace(path=='/'||path==undefined?'/home':path);
-          // alert('submit!');
+          this.postRequest("/user/getByLogin",this.loginForm).then(resp =>{
+            if (resp.data){
+              let path = this.$route.query.redirect;
+              this.$router.replace(path=='/'||path==undefined?'/home':path);
+            }else{
+              this.$message.error('账号或者密码输入错误，请重新输入！！！');
+              return false;
+            }
+          })
         } else {
           this.$message.error('请输入所有字段')
           return false;
@@ -110,7 +117,7 @@ export default {
   text-align: center;
   color: #42b983;
 }
-* {
+body {
   margin: 0;
   padding: 0;
 }
